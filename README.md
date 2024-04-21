@@ -26,5 +26,5 @@ pip install -r requirements.txt
 Now, we can run the application. 
 
 ```bash
-python app.py
+streamlit run app.py
 ```

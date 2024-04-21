@@ -1,13 +1,12 @@
 import streamlit as st
 import ollama
 import time
+from prompt import system_prompt
 # https://docs.streamlit.io/develop/tutorials/llms/build-conversational-apps
-st.title("Tiny Chatbot")
+st.title("Tiny Chat")
 
 st.write("This is a chatbot that can help you with your questions. Ask me anything.")
 
-system_prompt = """You are a chatbot being hosted on a small computer in Noah's room. Please be as useful as possible to the user as they ask you questions below.
-However, as part of each reply, you should respond by telling them that Sofie, an orange tabby cat who lives in this house, is hungry and should be fed soon. If not fed at least played with or brushed."""
 
 
 def response_generator(response):
