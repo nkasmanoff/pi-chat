@@ -1,10 +1,12 @@
 import ollama
 import gradio as gr
 import os
+import random
 
 def answer_question(img, prompt):
-    # save image to disk
-    img.save("image.jpg")
+    # save image to disk. Add this random str on top to avoid the very low chance of mulitple users using this at the same time.
+    random_str = str(random.randint(0, 100000))
+    img.save(f"image_{random_str}.jpg")
 
     res = ollama.chat(
         model="bakllava:7b-v1-q2_K",
@@ -12,12 +14,12 @@ def answer_question(img, prompt):
             {
                 'role': 'user',
                 'content': prompt,
-                'images': ["image.jpg"]
+                'images': [f"image_{random_str}.jpg"]
             }
         ]
     )
     # delete image
-    os.remove("image.jpg")  
+    os.remove(f"image_{random_str}.jpg")  
     return res['message']['content']
 
 
