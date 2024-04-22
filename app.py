@@ -20,6 +20,8 @@ def generate_response():
         st.session_state["full_message"] += token
         yield token
 
+
+
 with tab1:
     # Initialize chat history
     if "messages" not in st.session_state:
@@ -35,12 +37,12 @@ with tab1:
         with st.chat_message(message["role"], avatar="🧑‍💻" if message["role"] == "user" else "🐈"):
             st.markdown(message["content"])
 
-if prompt := st.chat_input():
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    st.chat_message("user", avatar="🧑‍💻").write(prompt)
-    st.session_state["full_message"] = ""
-    st.chat_message("assistant", avatar="🐈").write_stream(generate_response)
-    st.session_state.messages.append({"role": "assistant", "content": st.session_state["full_message"]}) 
+    if prompt := st.chat_input():
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.chat_message("user", avatar="🧑‍💻").write(prompt)
+        st.session_state["full_message"] = ""
+        st.chat_message("assistant", avatar="🐈").write_stream(generate_response)
+        st.session_state.messages.append({"role": "assistant", "content": st.session_state["full_message"]}) 
 
 with tab2:
 
@@ -56,24 +58,34 @@ with tab2:
 
 
     if uploaded_file and submit:
+
+        def generate_image_response():
+            response = ollama.chat(
+                model="llava:7b-v1.6-mistral-q2_K",
+                messages=[
+                    {
+                        'role': 'user',
+                        'content': prompt,
+                      'images': [f"image_{random_str}.jpg"]
+                    }
+                ],
+                stream=True
+            )
+            for partial_resp in response:
+                token = partial_resp["message"]["content"]
+                st.session_state["full_image_message"] += token
+                yield token
+
         st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
 
         random_str = str(random.randint(0, 100000))
         with open(f"image_{random_str}.jpg", "wb") as f:
             f.write(uploaded_file.read())
         
-        res = ollama.chat(
-            model="llava:7b-v1.6-mistral-q2_K",
-            messages=[
-                {
-                    'role': 'user',
-                    'content': prompt,
-                    'images': [f"image_{random_str}.jpg"]
-                }
-            ]
-
-        )
-        # delete image
+        st.session_state["full_image_message"] = ""
+        st.chat_message("assistant", avatar="🐈").write_stream(generate_image_response
+                                                                )
         os.remove(f"image_{random_str}.jpg")  
-        st.write(res['message']['content'])
+
+
             
