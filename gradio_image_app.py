@@ -9,7 +9,7 @@ def answer_question(img, prompt):
     img.save(f"image_{random_str}.jpg")
 
     res = ollama.chat(
-        model="bakllava:7b-v1-q2_K",
+        model="llava:7b-v1.6-mistral-q2_K",
         messages=[
             {
                 'role': 'user',

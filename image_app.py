@@ -13,7 +13,7 @@ st.write("Sadly this is pretty slow program so you may need to wait a few minute
 # file uploader
 uploaded_file = st.file_uploader("Choose an image...", 
                                  # type is jpg or png
-                                    type=["jpg", "png"])    
+                                    type=["jpg", "png","jpeg","tif","tiff"])    
 
 
 # text input
@@ -41,6 +41,4 @@ if uploaded_file and submit:
     # delete image
     os.remove(f"image_{random_str}.jpg")  
     st.write(res['message']['content'])
-else:
-    st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
     
