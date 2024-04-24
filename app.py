@@ -1,6 +1,5 @@
 import streamlit as st
 import ollama
-import time
 from prompt import system_prompt
 import os
 import random
@@ -13,7 +12,7 @@ st.write("Sadly this is pretty slow program so you may need to wait a few minute
 tab1, tab2 = st.tabs(["Chat", "Image Chat"])
 
 def generate_response():
-    response = ollama.chat(model='llama3:8b-instruct-q2_K', stream=True, messages=st.session_state.messages)
+    response = ollama.chat(model='phi3:mini', stream=True, messages=st.session_state.messages)
     for partial_resp in response:
         token = partial_resp["message"]["content"]
         st.session_state["full_message"] += token
@@ -46,7 +45,6 @@ if prompt := st.chat_input():
     st.session_state["full_message"] = ""
     st.chat_message("assistant", avatar="🐈").write_stream(generate_response)
     st.session_state.messages.append({"role": "assistant", "content": st.session_state["full_message"]}) 
-
 
 
 
