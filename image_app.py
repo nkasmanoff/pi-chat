@@ -6,11 +6,7 @@ from generate_gguf import generate_gguf
 
 st.title("Tiny Image Chat")
 
-
-# file uploader
-uploaded_file = st.file_uploader("Choose an image...",
-                                 # type is jpg or png
-                                 type=["jpg", "png", "jpeg", "tif", "tiff"])
+camera_input = st.camera_input(label="Camera Input")
 
 
 # text input
