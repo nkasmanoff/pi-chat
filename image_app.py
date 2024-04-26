@@ -1,23 +1,20 @@
 import streamlit as st
 import random
 import os
-import ollama
+from generate_gguf import generate_gguf
 
 
+st.title("Tiny Image Chat")
 
-st.title("Tiny Chat with Images")
-
-st.write("This is a chatbot that can help you with your questions. Ask me anything.")
-st.write("Sadly this is pretty slow program so you may need to wait a few minutes.")
 
 # file uploader
-uploaded_file = st.file_uploader("Choose an image...", 
+uploaded_file = st.file_uploader("Choose an image...",
                                  # type is jpg or png
-                                    type=["jpg", "png","jpeg","tif","tiff"])    
+                                 type=["jpg", "png", "jpeg", "tif", "tiff"])
 
 
 # text input
-prompt = st.text_input("Input Question", "")
+prompt = st.text_input("Question", "")
 submit = st.button("Submit")
 
 
@@ -27,18 +24,14 @@ if uploaded_file and submit:
     random_str = str(random.randint(0, 100000))
     with open(f"image_{random_str}.jpg", "wb") as f:
         f.write(uploaded_file.read())
-    
-    res = ollama.chat(
-        model="bakllava:7b-v1-q2_K",
-        messages=[
-            {
-                'role': 'user',
-                'content': prompt,
-                'images': [f"image_{random_str}.jpg"]
-            }
-        ]
-    )
+
+    output = generate_gguf(llama_cpp_path="../md-gguf/llama.cpp/",
+                           model_path="../md-gguf/moondream2/moondream2-text-model-f16.gguf",
+                           mmproj_path="../md-gguf/moondream2/moondream2-mmproj-f16.gguf",
+                           image_path=f"image_{random_str}.jpg",
+                           prompt=f'"{prompt}"',
+                           temp=0.)
+
     # delete image
-    os.remove(f"image_{random_str}.jpg")  
-    st.write(res['message']['content'])
-    
+    os.remove(f"image_{random_str}.jpg")
+    st.write(output)
